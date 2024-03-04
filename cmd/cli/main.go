@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -76,7 +77,8 @@ func main() {
 						fmt.Println("Note, venv is not present.")
 					}
 
-					// source venv
+					// TODO: source venv
+
 					// Check current shell
 					shell := os.Getenv("SHELL")
 					if shell != "" {
@@ -84,15 +86,48 @@ func main() {
 					} else {
 						fmt.Println("Unable to determine current shell.")
 					}
-					// run app
+
+					// Prepare command
 					cmd := exec.Command("python", "main.py")
-					// Execute and check for errors
-					_, err := cmd.Output()
+
+					// Setup output pipes
+					stdout, err := cmd.StdoutPipe()
 					if err != nil {
-						fmt.Println(err)
-						return cli.Exit("Could not run python program", 90)
+						fmt.Println("Error creating StdoutPipe:", err)
+						return cli.Exit("Error creating StdoutPipe", 90)
 					}
-					// deactivate venv
+
+					// Start the command
+					if err := cmd.Start(); err != nil {
+						fmt.Println("Error starting command:", err)
+						return cli.Exit("Could not start python program", 91)
+					}
+
+					// Read output from Python script
+					buf := make([]byte, 1024)
+					for {
+						n, err := stdout.Read(buf)
+						if err != nil {
+							if err == io.EOF {
+								fmt.Println("End of file reached.")
+								break
+							} else {
+								fmt.Println("Error reading from pipe:", err)
+								return cli.Exit("Could not finish python program", 92)
+							}
+						}
+						if n > 0 {
+							fmt.Print(string(buf[:n]))
+						}
+					}
+
+					// Wait for the command to finish
+					if err := cmd.Wait(); err != nil {
+						fmt.Println("Error waiting for command:", err)
+						return cli.Exit("Could not finish python program", 93)
+					}
+
+					// TODO: deactivate venv
 
 					fmt.Println("Program finished.")
 					return nil
