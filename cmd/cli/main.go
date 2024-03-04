@@ -43,9 +43,9 @@ func main() {
 					// Check if venv folder is present
 					is_venv, err := is_venv()
 					if err != nil {
-						return cli.Exit("Error checking for virtual environment", 84)
+						return cli.Exit("Error checking for virtual environment", 80)
 					} else if is_venv {
-						return cli.Exit("Virtual environment already exists", 85)
+						return cli.Exit("Virtual environment already exists", 81)
 					}
 
 					// Venv not found - create
@@ -55,7 +55,7 @@ func main() {
 					// Execute and check for errors
 					_, err = cmd.Output()
 					if err != nil {
-						return cli.Exit("Could not create new virtual environment", 86)
+						return cli.Exit("Could not create new virtual environment", 82)
 					}
 
 					// Confirm to user
@@ -70,8 +70,32 @@ func main() {
 				Action: func(cCtx *cli.Context) error {
 
 					fmt.Println("Running main.py...")
+					// Try to run program without venv
+					is_venv, _ := is_venv()
+					if !is_venv {
+						fmt.Println("Note, venv is not present.")
+						cmd := exec.Command("python", "main.py")
+						// Execute and check for errors
+						_, err := cmd.Output()
+						if err != nil {
+							fmt.Println(err)
+							return cli.Exit("Could not run python program", 90)
+						}
+						// source venv and then run
+					} else {
+						// source venv
+						// Check current shell
+						shell := os.Getenv("SHELL")
+						if shell != "" {
+							fmt.Println("Current shell:", shell)
+						} else {
+							fmt.Println("Unable to determine current shell.")
+						}
+						// run app
+						// deactivate venv
+					}
 
-					fmt.Println("added package: ", cCtx.Args().First())
+					fmt.Println("Program finished.")
 					return nil
 				},
 			},
