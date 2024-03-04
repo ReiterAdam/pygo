@@ -26,7 +26,7 @@ func is_venv() (bool, error) {
 	if os.IsNotExist(err) {
 		return false, err
 	}
-	// Return false if error is not due to not existance
+	// Return false if error is not due to not existence
 	return false, err
 
 }
@@ -74,26 +74,25 @@ func main() {
 					is_venv, _ := is_venv()
 					if !is_venv {
 						fmt.Println("Note, venv is not present.")
-						cmd := exec.Command("python", "main.py")
-						// Execute and check for errors
-						_, err := cmd.Output()
-						if err != nil {
-							fmt.Println(err)
-							return cli.Exit("Could not run python program", 90)
-						}
-						// source venv and then run
-					} else {
-						// source venv
-						// Check current shell
-						shell := os.Getenv("SHELL")
-						if shell != "" {
-							fmt.Println("Current shell:", shell)
-						} else {
-							fmt.Println("Unable to determine current shell.")
-						}
-						// run app
-						// deactivate venv
 					}
+
+					// source venv
+					// Check current shell
+					shell := os.Getenv("SHELL")
+					if shell != "" {
+						fmt.Println("Current shell:", shell)
+					} else {
+						fmt.Println("Unable to determine current shell.")
+					}
+					// run app
+					cmd := exec.Command("python", "main.py")
+					// Execute and check for errors
+					_, err := cmd.Output()
+					if err != nil {
+						fmt.Println(err)
+						return cli.Exit("Could not run python program", 90)
+					}
+					// deactivate venv
 
 					fmt.Println("Program finished.")
 					return nil
