@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -70,7 +69,6 @@ func main() {
 				Usage:   "run application from current directory",
 				Action: func(cCtx *cli.Context) error {
 
-					fmt.Println("Running main.py...")
 					// Try to run program without venv
 					is_venv, _ := is_venv()
 					if !is_venv {
@@ -90,35 +88,17 @@ func main() {
 					// Prepare command
 					cmd := exec.Command("python", "main.py")
 
-					// Setup output pipes
-					stdout, err := cmd.StdoutPipe()
-					if err != nil {
-						fmt.Println("Error creating StdoutPipe:", err)
-						return cli.Exit("Error creating StdoutPipe", 90)
-					}
+					// Set up pipes for interacting with the command
+					// Source: ChatGPT
+					cmd.Stdin = os.Stdin
+					cmd.Stdout = os.Stdout
+					cmd.Stderr = os.Stderr
 
+					fmt.Print("Running main.py...\n\n")
 					// Start the command
 					if err := cmd.Start(); err != nil {
 						fmt.Println("Error starting command:", err)
 						return cli.Exit("Could not start python program", 91)
-					}
-
-					// Read output from Python script
-					buf := make([]byte, 1024)
-					for {
-						n, err := stdout.Read(buf)
-						if err != nil {
-							if err == io.EOF {
-								fmt.Println("End of file reached.")
-								break
-							} else {
-								fmt.Println("Error reading from pipe:", err)
-								return cli.Exit("Could not finish python program", 92)
-							}
-						}
-						if n > 0 {
-							fmt.Print(string(buf[:n]))
-						}
 					}
 
 					// Wait for the command to finish
@@ -129,7 +109,7 @@ func main() {
 
 					// TODO: deactivate venv
 
-					fmt.Println("Program finished.")
+					fmt.Println("\nProgram finished.")
 					return nil
 				},
 			},
