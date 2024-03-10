@@ -43,9 +43,9 @@ func main() {
 					// Check if venv folder is present
 					is_venv, err := is_venv()
 					if err != nil {
-						return cli.Exit("Error checking for virtual environment", 80)
+						fmt.Println(err)
 					} else if is_venv {
-						return cli.Exit("Virtual environment already exists", 81)
+						fmt.Println(err)
 					}
 
 					// Venv not found - create
@@ -75,14 +75,13 @@ func main() {
 						fmt.Println("Note, venv is not present.")
 					}
 
-					// TODO: source venv
-
-					// Check current shell
-					shell := os.Getenv("SHELL")
-					if shell != "" {
-						fmt.Println("Current shell:", shell)
-					} else {
-						fmt.Println("Unable to determine current shell.")
+					// source venv
+					if is_venv {
+						cmd := exec.Command("source", ".venv/bin/activate")
+						_, err := cmd.Output()
+						if err != nil {
+							return cli.Exit("Could not source virtual environment", 90)
+						}
 					}
 
 					// Prepare command
@@ -107,7 +106,14 @@ func main() {
 						return cli.Exit("Could not finish python program", 93)
 					}
 
-					// TODO: deactivate venv
+					// deactivate venv
+					if is_venv {
+						cmd := exec.Command("deactivate")
+						_, err := cmd.Output()
+						if err != nil {
+							return cli.Exit("Could not deactivate virtual environment", 99)
+						}
+					}
 
 					fmt.Println("\nProgram finished.")
 					return nil
