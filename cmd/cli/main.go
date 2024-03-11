@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/urfave/cli/v2"
 )
@@ -69,6 +70,10 @@ func main() {
 				Usage:   "run application from current directory",
 				Action: func(cCtx *cli.Context) error {
 
+					fmt.Println(cCtx.Args())
+					arguments := fmt.Sprint(cCtx.Args())
+					argumentsFmt := strings.Fields(arguments[2 : len(arguments)-1])
+
 					// Try to run program without venv
 					is_venv, _ := is_venv()
 					if !is_venv {
@@ -85,7 +90,8 @@ func main() {
 					}
 
 					// Prepare command
-					cmd := exec.Command("python", "main.py")
+					cmdArgs := append([]string{"main.py"}, argumentsFmt...)
+					cmd := exec.Command("python", cmdArgs...)
 
 					// Set up pipes for interacting with the command
 					// Source: ChatGPT
