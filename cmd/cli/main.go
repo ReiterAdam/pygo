@@ -75,10 +75,11 @@ func main() {
 					if !is_venv {
 						fmt.Println("Note, venv is not present.")
 					}
-
+					var cmdArgs []string
 					// source venv
 					if is_venv {
-						cmd := exec.Command("bash", "-c", "source .venv/bin/activate")
+						cmdArgs = []string{"bash", "-c", "source .venv/bin/activate"}
+						cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
 						_, err := cmd.Output()
 						if err != nil {
 							return cli.Exit("Could not source virtual environment", 90)
@@ -88,9 +89,9 @@ func main() {
 					// Prepare command
 					arguments := fmt.Sprint(cCtx.Args())
 					argumentsFmt := strings.Fields(arguments[2 : len(arguments)-1])
-
-					cmdArgs := append([]string{"main.py"}, argumentsFmt...)
-					cmd := exec.Command("python", cmdArgs...)
+					cmdArgs = append(cmdArgs, "&&", "python", "main.py")
+					cmdArgs = append(cmdArgs, argumentsFmt...)
+					cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
 
 					// Set up pipes for interacting with the command
 					// Source: ChatGPT
@@ -112,13 +113,13 @@ func main() {
 					}
 
 					// deactivate venv
-					if is_venv {
-						cmd := exec.Command("deactivate")
-						_, err := cmd.Output()
-						if err != nil {
-							return cli.Exit("Could not deactivate virtual environment", 99)
-						}
-					}
+					// if is_venv {
+					// 	cmd := exec.Command("deactivate")
+					// 	_, err := cmd.Output()
+					// 	if err != nil {
+					// 		return cli.Exit("Could not deactivate virtual environment", 99)
+					// 	}
+					// }
 
 					fmt.Println("\nProgram finished.")
 					return nil
@@ -136,8 +137,9 @@ func main() {
 						return cli.Exit("Could not detect virtual environment", 100)
 					}
 
-					// Source virtual environment
-					cmd := exec.Command("bash", "-c", "source .venv/bin/activate")
+					// Test source virtual environment
+					cmdArgs := []string{"bash", "-c", "source .venv/bin/activate"}
+					cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
 					_, err := cmd.Output()
 					if err != nil {
 						fmt.Println(err)
@@ -148,8 +150,10 @@ func main() {
 					arguments := fmt.Sprint(cCtx.Args())
 					argumentsFmt := strings.Fields(arguments[2 : len(arguments)-1])
 
-					cmdArgs := append([]string{"-c", "pip", "install"}, argumentsFmt...)
-					cmd = exec.Command("bash", cmdArgs...)
+					// cmdArgs := append([]string{"-c", "pip", "install"}, argumentsFmt...)
+					cmdArgs = append(cmdArgs, "pip", "install")
+					cmdArgs = append(cmdArgs, argumentsFmt...)
+					cmd = exec.Command(cmdArgs[0], cmdArgs[1:]...)
 
 					// Set up pipes for interacting with the command
 					// Source: ChatGPT
@@ -170,14 +174,14 @@ func main() {
 					}
 
 					// deactivate venv
-					cmdArgs = []string{"-c", "deactivate"}
-					cmd = exec.Command("bash", cmdArgs...)
-					osiem, err := cmd.Output()
-					if err != nil {
-						fmt.Println(osiem)
-						fmt.Println(err)
-						return cli.Exit("Could not deactivate virtual environment", 104)
-					}
+					// cmdArgs = []string{"-c", "deactivate"}
+					// cmd = exec.Command("bash", cmdArgs...)
+					// osiem, err := cmd.Output()
+					// if err != nil {
+					// 	fmt.Println(osiem)
+					// 	fmt.Println(err)
+					// 	return cli.Exit("Could not deactivate virtual environment", 104)
+					// }
 
 					fmt.Println("added package: ", cCtx.Args().First())
 					return nil
