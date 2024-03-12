@@ -45,11 +45,12 @@ func main() {
 				Usage:   "run application from current directory",
 				Action: func(cCtx *cli.Context) error {
 
-					// Try to run program without venv
+					// Check if venv is present
 					is_venv, _ := isVenv()
 					if !is_venv {
 						fmt.Println("Note, venv is not present.")
 					}
+
 					var cmdArgs []string
 
 					// Add venv sourcing
@@ -61,12 +62,11 @@ func main() {
 
 					// Prepare command
 					// Get command line arguments from user
-					arguments := fmt.Sprint(cCtx.Args())
-					argumentsFmt := strings.Fields(arguments[2 : len(arguments)-1])
-					// form whole command
-					cmdArgs = append(cmdArgs, argumentsFmt...)
-					fmt.Println(cmdArgs)
+					argumentsFmt := prepareUserArguments(fmt.Sprint(cCtx.Args()))
+					// Form command to run
+					cmdArgs[len(cmdArgs)-1] = cmdArgs[len(cmdArgs)-1] + " " + argumentsFmt
 
+					// Execute
 					if err := executeCommand(cmdArgs); err != nil {
 						return cli.Exit("Could not run program", 92)
 					}
@@ -87,24 +87,12 @@ func main() {
 						return cli.Exit("Could not detect virtual environment", 100)
 					}
 
-					// Test source virtual environment
-					cmdArgs := []string{"bash", "-c", "source .venv/bin/activate"}
-					cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
-					_, err := cmd.Output()
-					if err != nil {
-						fmt.Println(err)
-						return cli.Exit("Could not source virtual environment", 101)
-					}
+					// Form command to run
+					cmdArgs := []string{"bash", "-c", "source .venv/bin/activate && pip install"}
+					argumentsFmt := prepareUserArguments(fmt.Sprint(cCtx.Args()))
+					cmdArgs[len(cmdArgs)-1] = cmdArgs[len(cmdArgs)-1] + " " + argumentsFmt
 
-					// Prepare command
-					arguments := fmt.Sprint(cCtx.Args())
-					argumentsFmt := strings.Fields(arguments[2 : len(arguments)-1])
-
-					// cmdArgs := append([]string{"-c", "pip", "install"}, argumentsFmt...)
-					cmdArgs = append(cmdArgs, "pip", "install")
-					cmdArgs = append(cmdArgs, argumentsFmt...)
-
-					fmt.Println(cmdArgs)
+					// Execute
 					if err := executeCommand(cmdArgs); err != nil {
 						return cli.Exit("Could not install package", 102)
 					}
@@ -189,4 +177,12 @@ func executeCommand(cmdArgs []string) error {
 	}
 
 	return nil
+}
+
+func prepareUserArguments(arguments string) string {
+
+	argumentsFmt := strings.Fields(arguments[2 : len(arguments)-1])
+	args2 := strings.Join(argumentsFmt, " ")
+
+	return args2
 }
