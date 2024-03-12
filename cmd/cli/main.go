@@ -20,7 +20,7 @@ func is_venv() (bool, error) {
 	}
 
 	// Check if the "venv" folder exists in the current directory
-	_, err = os.Stat(dir + "/.venv")
+	_, err = os.Stat(dir + "/.venv/")
 	if err == nil {
 		return true, nil
 	}
@@ -70,10 +70,6 @@ func main() {
 				Usage:   "run application from current directory",
 				Action: func(cCtx *cli.Context) error {
 
-					fmt.Println(cCtx.Args())
-					arguments := fmt.Sprint(cCtx.Args())
-					argumentsFmt := strings.Fields(arguments[2 : len(arguments)-1])
-
 					// Try to run program without venv
 					is_venv, _ := is_venv()
 					if !is_venv {
@@ -90,6 +86,9 @@ func main() {
 					}
 
 					// Prepare command
+					arguments := fmt.Sprint(cCtx.Args())
+					argumentsFmt := strings.Fields(arguments[2 : len(arguments)-1])
+
 					cmdArgs := append([]string{"main.py"}, argumentsFmt...)
 					cmd := exec.Command("python", cmdArgs...)
 
@@ -130,6 +129,56 @@ func main() {
 				Aliases: []string{"a"},
 				Usage:   "add a package to the venv and requirements",
 				Action: func(cCtx *cli.Context) error {
+
+					// Check if venv is present
+					is_venv, _ := is_venv()
+					if !is_venv {
+						return cli.Exit("Could not detect virtual environment", 100)
+					}
+
+					// Source virtual environment
+					cmd := exec.Command("bash", "-c", "source .venv/bin/activate")
+					_, err := cmd.Output()
+					if err != nil {
+						fmt.Println(err)
+						return cli.Exit("Could not source virtual environment", 101)
+					}
+
+					// Prepare command
+					arguments := fmt.Sprint(cCtx.Args())
+					argumentsFmt := strings.Fields(arguments[2 : len(arguments)-1])
+
+					cmdArgs := append([]string{"-c", "pip", "install"}, argumentsFmt...)
+					cmd = exec.Command("bash", cmdArgs...)
+
+					// Set up pipes for interacting with the command
+					// Source: ChatGPT
+					cmd.Stdin = os.Stdin
+					cmd.Stdout = os.Stdout
+					cmd.Stderr = os.Stderr
+
+					// Start the command
+					if err := cmd.Start(); err != nil {
+						fmt.Println("Error starting command:", err)
+						return cli.Exit("Could not start python program", 102)
+					}
+
+					// Wait for the command to finish
+					if err := cmd.Wait(); err != nil {
+						fmt.Println("Error waiting for command:", err)
+						return cli.Exit("Could not finish python program", 103)
+					}
+
+					// deactivate venv
+					cmdArgs = []string{"-c", "deactivate"}
+					cmd = exec.Command("bash", cmdArgs...)
+					osiem, err := cmd.Output()
+					if err != nil {
+						fmt.Println(osiem)
+						fmt.Println(err)
+						return cli.Exit("Could not deactivate virtual environment", 104)
+					}
+
 					fmt.Println("added package: ", cCtx.Args().First())
 					return nil
 				},
