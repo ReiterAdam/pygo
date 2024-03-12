@@ -112,15 +112,6 @@ func main() {
 						return cli.Exit("Could not finish python program", 93)
 					}
 
-					// deactivate venv
-					// if is_venv {
-					// 	cmd := exec.Command("deactivate")
-					// 	_, err := cmd.Output()
-					// 	if err != nil {
-					// 		return cli.Exit("Could not deactivate virtual environment", 99)
-					// 	}
-					// }
-
 					fmt.Println("\nProgram finished.")
 					return nil
 				},
@@ -172,16 +163,6 @@ func main() {
 						fmt.Println("Error waiting for command:", err)
 						return cli.Exit("Could not finish python program", 103)
 					}
-
-					// deactivate venv
-					// cmdArgs = []string{"-c", "deactivate"}
-					// cmd = exec.Command("bash", cmdArgs...)
-					// osiem, err := cmd.Output()
-					// if err != nil {
-					// 	fmt.Println(osiem)
-					// 	fmt.Println(err)
-					// 	return cli.Exit("Could not deactivate virtual environment", 104)
-					// }
 
 					fmt.Println("added package: ", cCtx.Args().First())
 					return nil
