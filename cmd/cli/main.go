@@ -78,7 +78,7 @@ func main() {
 
 					// source venv
 					if is_venv {
-						cmd := exec.Command("source", ".venv/bin/activate")
+						cmd := exec.Command("bash", "-c", "source .venv/bin/activate")
 						_, err := cmd.Output()
 						if err != nil {
 							return cli.Exit("Could not source virtual environment", 90)
