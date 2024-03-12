@@ -42,11 +42,9 @@ func main() {
 				Action: func(cCtx *cli.Context) error {
 
 					// Check if venv folder is present
-					is_venv, err := is_venv()
-					if err != nil {
-						fmt.Println(err)
-					} else if is_venv {
-						fmt.Println(err)
+					is_venv, _ := is_venv()
+					if is_venv {
+						return cli.Exit("Venv already here", 80)
 					}
 
 					// Venv not found - create
@@ -54,7 +52,7 @@ func main() {
 					cmd := exec.Command("python", "-m", "venv", ".venv")
 
 					// Execute and check for errors
-					_, err = cmd.Output()
+					_, err := cmd.Output()
 					if err != nil {
 						return cli.Exit("Could not create new virtual environment", 82)
 					}
@@ -167,7 +165,7 @@ func main() {
 						return cli.Exit("Could not finish python program", 103)
 					}
 
-					fmt.Println("added package: ", cCtx.Args().First())
+					fmt.Println("Added package: ", cCtx.Args().First())
 					return nil
 				},
 			},
