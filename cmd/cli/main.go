@@ -84,12 +84,15 @@ func main() {
 						if err != nil {
 							return cli.Exit("Could not source virtual environment", 90)
 						}
+
+						// add && for python script
+						cmdArgs = append(cmdArgs, "&&")
 					}
 
 					// Prepare command
 					arguments := fmt.Sprint(cCtx.Args())
 					argumentsFmt := strings.Fields(arguments[2 : len(arguments)-1])
-					cmdArgs = append(cmdArgs, "&&", "python", "main.py")
+					cmdArgs = append(cmdArgs, "python", "main.py")
 					cmdArgs = append(cmdArgs, argumentsFmt...)
 					cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
 
