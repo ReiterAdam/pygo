@@ -16,7 +16,7 @@ func main() {
 			{
 				Name:    "setup",
 				Aliases: []string{"s"},
-				Usage:   "create venv and project template",
+				Usage:   "create venv",
 				Action: func(cCtx *cli.Context) error {
 
 					// Check if venv folder is present
@@ -42,7 +42,7 @@ func main() {
 			{
 				Name:    "run",
 				Aliases: []string{"r"},
-				Usage:   "run application from current directory",
+				Usage:   "run main.py from current directory",
 				Action: func(cCtx *cli.Context) error {
 
 					// Check if venv is present
@@ -78,7 +78,7 @@ func main() {
 			{
 				Name:    "add",
 				Aliases: []string{"a"},
-				Usage:   "add a package to the venv and requirements",
+				Usage:   "add a package to the venv",
 				Action: func(cCtx *cli.Context) error {
 
 					// Check if venv is present
@@ -98,6 +98,32 @@ func main() {
 					}
 
 					fmt.Println("Added package: ", cCtx.Args().First())
+					return nil
+				},
+			},
+			{
+				Name:    "remove",
+				Aliases: []string{"rm"},
+				Usage:   "remove a package from venv",
+				Action: func(cCtx *cli.Context) error {
+
+					// Check if venv is present
+					is_venv, _ := isVenv()
+					if !is_venv {
+						return cli.Exit("Could not detect virtual environment", 100)
+					}
+
+					// Form command to run
+					cmdArgs := []string{"bash", "-c", "source .venv/bin/activate && pip remove"}
+					argumentsFmt := prepareUserArguments(fmt.Sprint(cCtx.Args()))
+					cmdArgs[len(cmdArgs)-1] = cmdArgs[len(cmdArgs)-1] + " " + argumentsFmt
+
+					// Execute
+					if err := executeCommand(cmdArgs); err != nil {
+						return cli.Exit("Could not remove a package", 102)
+					}
+
+					fmt.Println("Removed package: ", cCtx.Args().First())
 					return nil
 				},
 			},
