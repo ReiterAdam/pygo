@@ -7,13 +7,16 @@ import (
 	"strings"
 )
 
-func IsVenv() (bool, error) {
+func IsVenv(globalVenv bool) (bool, error) {
 	// Function checks if venv directory is made
 
-	// Get the current working directory
+	// Get directory to check
 	dir, err := os.Getwd()
 	if err != nil {
 		return false, err
+	}
+	if globalVenv {
+		dir = "~/.config/pygo"
 	}
 
 	// Check if the "venv" folder exists in the current directory
