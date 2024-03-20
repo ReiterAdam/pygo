@@ -24,7 +24,7 @@ func IsVenv(globalVenv bool) (bool, error) {
 		dir = filepath.Join(homeDir, ".pygo")
 	}
 	// Check if the "venv" folder exists in the current directory
-	_, err = os.Stat(dir + "/.venv/") // chceck which path uses stat
+	_, err = os.Stat(dir + "/.venv/")
 	if err == nil {
 		return true, nil
 	}
