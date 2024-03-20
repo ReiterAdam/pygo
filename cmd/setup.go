@@ -15,16 +15,16 @@ func SetupCommand() *cli.Command {
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:     "type",
-				Value:    "global",
+				Value:    "local",
 				Usage:    "type of venv",
 				Required: true,
 			},
 		},
 		Action: func(cCtx *cli.Context) error {
 
-			globalVenv := true
-			if cCtx.String("type") == "local" {
-				globalVenv = false
+			globalVenv := false
+			if cCtx.String("type") == "global" {
+				globalVenv = true
 			}
 
 			// Check if venv folder is present
@@ -37,7 +37,7 @@ func SetupCommand() *cli.Command {
 			// Prepare command
 			cmdArgs := []string{"bash", "-c", "python -m venv .venv"}
 			if globalVenv {
-				cmdArgs = []string{"bash", "-c", "python -m venv ~/.config/pygo/.venv"}
+				cmdArgs = []string{"bash", "-c", "python -m venv ~/.pygo/.venv"}
 			}
 
 			fmt.Println(cmdArgs)
