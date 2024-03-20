@@ -7,11 +7,11 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func RunCommand() *cli.Command {
+func TestCommand() *cli.Command {
 	return &cli.Command{
-		Name:    "run",
-		Aliases: []string{"r"},
-		Usage:   "run main.py from project root",
+		Name:    "test",
+		Aliases: []string{"t"},
+		Usage:   "run tests from project root",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:     "type",
@@ -29,7 +29,7 @@ func RunCommand() *cli.Command {
 			// Check if venv is present
 			is_venv, _ := helpers.IsVenv(globalVenv)
 			if !is_venv {
-				fmt.Printf("Note, chosen venv is not present.")
+				return cli.Exit("Venv is not present.", 94)
 			}
 
 			fmt.Println()
@@ -37,9 +37,9 @@ func RunCommand() *cli.Command {
 
 			// Add venv sourcing
 			if is_venv && globalVenv {
-				cmdArgs = []string{"bash", "-c", "source ~/.pygo/.venv/bin/activate && python src/main.py"}
+				cmdArgs = []string{"bash", "-c", "source ~/.pygo/.venv/bin/activate && pytest tests/"}
 			} else if is_venv && !globalVenv {
-				cmdArgs = []string{"bash", "-c", "source .venv/bin/activate && python src/main.py"}
+				cmdArgs = []string{"bash", "-c", "source .venv/bin/activate && pytest tests/"}
 			} else {
 				cmdArgs = []string{"bash", "-c", "python src/main.py"}
 			}
@@ -53,10 +53,10 @@ func RunCommand() *cli.Command {
 
 			// Execute
 			if err := helpers.ExecuteCommand(cmdArgs); err != nil {
-				return cli.Exit("Could not run program", 92)
+				return cli.Exit("Could not run tests", 95)
 			}
 
-			fmt.Println("\nProgram finished.")
+			fmt.Println("\nTests finished.")
 			return nil
 		},
 	}

@@ -23,7 +23,7 @@ func RemoveCommand() *cli.Command {
 			}
 
 			// Form command to run
-			cmdArgs := []string{"bash", "-c", "source .venv/bin/activate && pip remove"}
+			cmdArgs := []string{"bash", "-c", "source .venv/bin/activate && pip uninstall"}
 			argumentsFmt := helpers.PrepareUserArguments(fmt.Sprint(cCtx.Args()))
 			cmdArgs[len(cmdArgs)-1] = cmdArgs[len(cmdArgs)-1] + " " + argumentsFmt
 
@@ -32,7 +32,7 @@ func RemoveCommand() *cli.Command {
 				return cli.Exit("Could not remove a package", 102)
 			}
 
-			fmt.Println("Added package: ", cCtx.Args().First())
+			fmt.Println("Removed package: ", cCtx.Args().First())
 			return nil
 		},
 	}

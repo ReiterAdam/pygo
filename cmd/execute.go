@@ -15,6 +15,7 @@ func Execute() error {
 			RunCommand(),
 			AddCommand(),
 			RemoveCommand(),
+			TestCommand(),
 		},
 	}
 
