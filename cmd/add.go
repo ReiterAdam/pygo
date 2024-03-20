@@ -27,6 +27,7 @@ func AddCommand() *cli.Command {
 				globalVenv = true
 			}
 
+			fmt.Println()
 			// Check if venv is present
 			is_venv, _ := helpers.IsVenv(globalVenv)
 			if !is_venv {
@@ -45,7 +46,6 @@ func AddCommand() *cli.Command {
 				return cli.Exit("Could not install package", 102)
 			}
 
-			fmt.Println("Added package: ", cCtx.Args().First())
 			return nil
 		},
 	}

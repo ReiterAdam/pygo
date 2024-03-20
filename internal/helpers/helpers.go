@@ -28,7 +28,6 @@ func IsVenv(globalVenv bool) (bool, error) {
 	if err == nil {
 		return true, nil
 	}
-	fmt.Println(err)
 	if os.IsNotExist(err) {
 		return false, err
 	}

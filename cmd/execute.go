@@ -8,6 +8,8 @@ import (
 
 func Execute() error {
 	app := &cli.App{
+		Name:  "Pygo",
+		Usage: "Helps with venv managment",
 		Commands: []*cli.Command{
 			SetupCommand(),
 			RunCommand(),
