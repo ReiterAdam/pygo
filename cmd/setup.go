@@ -15,8 +15,7 @@ func SetupCommand() *cli.Command {
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:     "type",
-				Value:    "local",
-				Usage:    "type of venv",
+				Usage:    "type of venv (local or global)",
 				Required: true,
 			},
 		},

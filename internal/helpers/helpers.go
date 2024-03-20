@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
@@ -16,7 +17,11 @@ func IsVenv(globalVenv bool) (bool, error) {
 		return false, err
 	}
 	if globalVenv {
-		dir = "~/.pygo"
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			return false, err
+		}
+		dir = filepath.Join(homeDir, ".pygo")
 	}
 	// Check if the "venv" folder exists in the current directory
 	_, err = os.Stat(dir + "/.venv/") // chceck which path uses stat
