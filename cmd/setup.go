@@ -39,10 +39,20 @@ func SetupCommand() *cli.Command {
 				cmdArgs = []string{"bash", "-c", "python -m venv ~/.pygo/.venv"}
 			}
 
-			fmt.Println(cmdArgs)
+			fmt.Println()
 
 			if err := helpers.ExecuteCommand(cmdArgs); err != nil {
 				return cli.Exit("Could not setup venv", 82)
+			}
+
+			cmdArgs = []string{"bash", "-c", "mkdir src tests"}
+			if err := helpers.ExecuteCommand(cmdArgs); err != nil {
+				return cli.Exit("Could not setup directories", 83)
+			}
+
+			cmdArgs = []string{"bash", "-c", "touch src/__init__.py tests/__init__.py"}
+			if err := helpers.ExecuteCommand(cmdArgs); err != nil {
+				return cli.Exit("Could not setup starter files", 84)
 			}
 
 			// Confirm to user
