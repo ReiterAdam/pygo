@@ -12,10 +12,22 @@ func SetupCommand() *cli.Command {
 		Name:    "setup",
 		Aliases: []string{"s"},
 		Usage:   "create venv",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:     "type",
+				Usage:    "type of venv (local or global)",
+				Required: true,
+			},
+		},
 		Action: func(cCtx *cli.Context) error {
 
+			globalVenv := false
+			if cCtx.String("type") == "global" {
+				globalVenv = true
+			}
+
 			// Check if venv folder is present
-			is_venv, _ := helpers.IsVenv()
+			is_venv, _ := helpers.IsVenv(globalVenv)
 			if is_venv {
 				return cli.Exit("Venv already here", 80)
 			}
@@ -23,6 +35,10 @@ func SetupCommand() *cli.Command {
 			// Venv not found - create
 			// Prepare command
 			cmdArgs := []string{"bash", "-c", "python -m venv .venv"}
+			if globalVenv {
+				cmdArgs = []string{"bash", "-c", "python -m venv ~/.pygo/.venv"}
+			}
+
 			fmt.Println(cmdArgs)
 
 			if err := helpers.ExecuteCommand(cmdArgs); err != nil {

@@ -4,23 +4,31 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
-func IsVenv() (bool, error) {
+func IsVenv(globalVenv bool) (bool, error) {
 	// Function checks if venv directory is made
 
-	// Get the current working directory
+	// Get directory to check
 	dir, err := os.Getwd()
 	if err != nil {
 		return false, err
 	}
-
+	if globalVenv {
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			return false, err
+		}
+		dir = filepath.Join(homeDir, ".pygo")
+	}
 	// Check if the "venv" folder exists in the current directory
 	_, err = os.Stat(dir + "/.venv/")
 	if err == nil {
 		return true, nil
 	}
+	fmt.Println(err)
 	if os.IsNotExist(err) {
 		return false, err
 	}

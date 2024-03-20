@@ -14,8 +14,10 @@ func RemoveCommand() *cli.Command {
 		Usage:   "remove a package from venv",
 		Action: func(cCtx *cli.Context) error {
 
+			globalVenv := false
+
 			// Check if venv is present
-			is_venv, _ := helpers.IsVenv()
+			is_venv, _ := helpers.IsVenv(globalVenv)
 			if !is_venv {
 				return cli.Exit("Could not detect virtual environment", 100)
 			}

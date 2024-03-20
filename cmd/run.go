@@ -14,8 +14,10 @@ func RunCommand() *cli.Command {
 		Usage:   "run main.py from current directory",
 		Action: func(cCtx *cli.Context) error {
 
+			globalVenv := false
+
 			// Check if venv is present
-			is_venv, _ := helpers.IsVenv()
+			is_venv, _ := helpers.IsVenv(globalVenv)
 			if !is_venv {
 				fmt.Printf("Note, venv is not present.\n\n")
 			}
