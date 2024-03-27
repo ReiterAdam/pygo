@@ -41,7 +41,7 @@ func TestCommand() *cli.Command {
 			} else if is_venv && !globalVenv {
 				cmdArgs = []string{"bash", "-c", "source .venv/bin/activate && pytest tests/"}
 			} else {
-				cmdArgs = []string{"bash", "-c", "python src/main.py"}
+				return cli.Exit("Could not run tests", 95)
 			}
 
 			// Prepare command
