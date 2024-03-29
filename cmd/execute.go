@@ -8,7 +8,7 @@ import (
 
 func Execute() error {
 	app := &cli.App{
-		Name:  "Pygo",
+		Name:  "pygo",
 		Usage: "Helps with venv management",
 		Commands: []*cli.Command{
 			SetupCommand(),
