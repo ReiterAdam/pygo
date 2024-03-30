@@ -29,13 +29,28 @@ func TestCommand() *cli.Command {
 			// Check if venv is present
 			is_venv, _ := helpers.IsVenv(globalVenv)
 			if !is_venv {
-				return cli.Exit("Venv is not present.", 94)
+				return cli.Exit("Venv is not present.", 92)
 			}
 
-			fmt.Println()
+			fmt.Println("Type checking...")
 			var cmdArgs []string
 
-			// Add venv sourcing
+			// Run mypy to
+			if is_venv && globalVenv {
+				cmdArgs = []string{"bash", "-c", "source ~/.pygo/.venv/bin/activate && mypy src/main.py"}
+			} else if is_venv && !globalVenv {
+				cmdArgs = []string{"bash", "-c", "source .venv/bin/activate && mypy src/main.py"}
+			} else {
+				return cli.Exit("Could not run mypy", 93)
+			}
+
+			// Execute
+			if err := helpers.ExecuteCommand(cmdArgs); err != nil {
+				return cli.Exit("Could not run mypy", 94)
+			}
+
+			fmt.Println("Executing tests...")
+			// Run pytest
 			if is_venv && globalVenv {
 				cmdArgs = []string{"bash", "-c", "source ~/.pygo/.venv/bin/activate && pytest tests/"}
 			} else if is_venv && !globalVenv {
@@ -44,16 +59,9 @@ func TestCommand() *cli.Command {
 				return cli.Exit("Could not run tests", 95)
 			}
 
-			// Prepare command
-			// Get command line arguments from user
-			argumentsFmt := helpers.PrepareUserArguments(fmt.Sprint(cCtx.Args()))
-
-			// Form command to run
-			cmdArgs[len(cmdArgs)-1] = cmdArgs[len(cmdArgs)-1] + " " + argumentsFmt
-
 			// Execute
 			if err := helpers.ExecuteCommand(cmdArgs); err != nil {
-				return cli.Exit("Could not run tests", 95)
+				return cli.Exit("Could not run tests", 96)
 			}
 
 			fmt.Println("\nTests finished.")
