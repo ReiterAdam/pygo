@@ -3,9 +3,10 @@ pygo is a Go application designed to automate the management of Python environme
 
 ## Features
 
-- **Automatic Python Environment Management**: pygo simplifies the process of managing Python environments, allowing users to create and switch between local and global environments effortlessly.
+- **Automatic Python Environment Management**: pygo simplifies the process of managing Python environments, allowing users to create and switch between local and global environments.
 - **Environment Sourcing**: The application automatically sources the designated Python environment when the program is executed, ensuring that the correct environment settings are applied.
-- **Directory Setup**: Upon setup, pygo creates the necessary directories (`src` and `tests`) for organizing source code and test files, streamlining the development process.
+- **Directory Setup**: Upon setup, pygo creates the necessary directories (`src` and `tests`) for organizing source code and test files.
+- **Pip Handler**: After setup, adding and removing python packages becomes seemless expirience.
 
 
 ## Installation
@@ -34,13 +35,14 @@ pygo is a Go application designed to automate the management of Python environme
 └── tests  
    └── __init__.py
 ```
-
+    If flag `--type global` is used, then globabl virtual environment is created in path `~/.pygo/.venv`
 
 - **Run Your Program**:
     
     After setting up the environment, simply run your program using the `pygo run` command in projects root directory:
     `pygo run`
-    This command sources existing environment (flag `--type` has value `local` by default) and runs `src/main.py`.
+    This command sources existing environment (flag `--type` has value `local` by default) and runs `src/main.py`. If you want to provide command line arguments for your program, it is also supported:
+    `pygo run arg1 arg2`
     
 - **Test Your Program**:
     
