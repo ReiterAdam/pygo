@@ -1,7 +1,5 @@
 # Pygo
 
-#### Video Demo:  
-
 #### Description
 
 pygo is a Go application designed to automate the management of Python environments, both locally and globally. Its primary functionality includes creating and managing Python environments, and automatically sourcing the environment when the program runs. Additionally, it sets up directories for source code (`src`) and tests (`tests`) during the setup process.
