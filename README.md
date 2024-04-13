@@ -8,8 +8,8 @@ pygo is a Go application designed to automate the management of Python environme
 
 #### Technologies
 Project uses golang cli package as a base and also relies on python libraries:
-* [urfave/cli v2](https://cli.urfave.org/)
-* [Python 3.10+](https://www.python.org/)
+- [urfave/cli v2](https://cli.urfave.org/)
+- [Python 3.10+](https://www.python.org/)
 - [pip 24](https://pypi.org/project/pip/)
 - [pytest 8.0.2](https://docs.pytest.org/en/8.0.x/)
 - [mypy 1.9](https://mypy-lang.org/)
@@ -29,7 +29,7 @@ Project uses golang cli package as a base and also relies on python libraries:
     `git clone https://github.com/ReiterAdam/pygo.git`
 2. **Build the Application**:
     Navigate to the project directory and build the application using the `go build` command:
-    `cd pygo go build`
+    `cd pygo && go build`
 3. **Move the Executable**:
     Move the generated executable (`pygo`) to a directory included in your system's PATH for easy access:
     `mv pygo /usr/local/bin`
