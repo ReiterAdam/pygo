@@ -47,7 +47,8 @@ Project uses golang cli package as a base and also relies on python libraries:
 └── tests  
    └── __init__.py
 ```
-    If flag `--type global` is used, then globabl virtual environment is created in path `~/.pygo/.venv`
+
+   If flag `--type global` is used, then global virtual environment is created in path `~/.pygo/.venv`
 
 - **Run Your Program**:
     
