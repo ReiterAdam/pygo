@@ -59,7 +59,7 @@ func SetupCommand() *cli.Command {
 				return cli.Exit("Could not setup directories", 84)
 			}
 
-			cmdArgs = []string{"bash", "-c", "touch src/__init__.py tests/__init__.py"}
+			cmdArgs = []string{"bash", "-c", "touch src/__init__.py src/main.py tests/__init__.py"}
 			if err := helpers.ExecuteCommand(cmdArgs); err != nil {
 				return cli.Exit("Could not setup starter files", 85)
 			}
